@@ -39,7 +39,7 @@ public:
      * @param box parameter
      * @return the box's type
      */
-    virtual BoxType checkBox(const Box& box) = 0;
+    virtual BoxType checkBox(const Box& box) const = 0;
 };
 
 

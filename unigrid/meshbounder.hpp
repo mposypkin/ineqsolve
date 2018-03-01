@@ -14,6 +14,7 @@
 #ifndef MESHBOUNDER_HPP
 #define MESHBOUNDER_HPP
 
+#include <limits>
 #include "comdef.hpp"
 #include "bounder.hpp"
 
@@ -32,12 +33,13 @@ public:
 
     }
 
-    BoxType checkBox(const Box& box) {
-        std::cout << "Checking box " << box << "\n";
+    BoxType checkBox(const Box& box) const {
         const int n = box.mDim;
         std::vector<FT> delt(n);
         std::vector<int> cnt(n, 0);
         std::vector<FT> x(n);
+        FT maxCon = -std::numeric_limits<FT>::max();
+        FT minCon = std::numeric_limits<FT>::max();
         int maxn = 1;
         for (int i = 0; i < n; i++) {
             delt[i] = ((box.mB[i] - box.mA[i]) / (mNP - 1));
@@ -45,29 +47,37 @@ public:
         }
         for (int i = 0; i < maxn; i++) {
             getVec(i, n, cnt);
-            for (auto j : cnt) {
-                std::cout << j << "\t";
-            }
-            std::cout << std::endl;
             for (int j = 0; j < n; j++) {
                 x[j] = box.mA[j] + delt[j] * cnt[j];
             }
-            for (auto y : x) {
-                std::cout << y << "\t";
-            }
-            std::cout << std::endl;
-            int k = 0;
-            for(auto cons : mProblem.mConstrs) {
-                auto v = cons(n, x.data());
-                std::cout << "v[" << k ++ << "] = " << v << "\n";
-            }
-            std::cout << std::endl;
+            FT v = getPhi(x.data());
+            maxCon = std::max(v, maxCon);
+            minCon = std::min(v, minCon);
         }
+
+        Bounder::BoxType bt;
+        if (maxCon <= 0)
+            bt = Bounder::BoxType::IN;
+        else if (minCon > 0)
+            bt = Bounder::BoxType::OUT;
+        else
+            bt = BoxType::BOUND;
+
+        return bt;
     }
 
 private:
 
-    void getVec(int i, int n, std::vector<int>& cnt) {
+    FT getPhi(FT* x) const {
+        const int n = mProblem.mBox.mDim;
+        FT v = -std::numeric_limits<FT>::max();
+        for (auto cons : mProblem.mConstrs) {
+            v = std::max(v, cons(n, x));
+        }
+        return v;
+    }
+
+    void getVec(int i, int n, std::vector<int>& cnt) const {
         for (int j = 0; j < n; j++) {
             int d = i % mNP;
             cnt[j] = d;

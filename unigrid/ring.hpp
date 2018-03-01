@@ -17,9 +17,9 @@
 #include "comdef.hpp"
 
 
-constexpr FT r1 = 4;
+constexpr FT r1 = 6;
 
-constexpr FT r2 = 6;
+constexpr FT r2 = 4;
 
 FT constr1(int n, const FT* x) {
     FT v = 0;

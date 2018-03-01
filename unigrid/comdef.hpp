@@ -40,9 +40,11 @@ struct Box {
     }
 
     Box(Box&& box) {
-        std::swap(mA, box.mA);
-        std::swap(mB, box.mB);
-        std::swap(mDim, box.mDim);
+        mA = box.mA;
+        mB = box.mB;
+        mDim = box.mDim;
+        box.mA = nullptr;
+        box.mB = nullptr;
     }
 
     Box& operator=(Box&& box) {
@@ -50,6 +52,51 @@ struct Box {
         std::swap(mB, box.mB);
         std::swap(mDim, box.mDim);
         return *this;
+    }
+
+    /**
+     * Copies the box
+     * @param nbox new box to fill in
+     */
+    void copy(Box& nbox) const {
+        for (int i = 0; i < mDim; i++) {
+            nbox.mA[i] = mA[i];
+            nbox.mB[i] = mB[i];
+        }
+    }
+
+    /**
+     * Splits the box across the longest edge
+     * @param box1 first resulting box
+     * @param box2 second resulting box
+     */
+    void split(Box& box1, Box& box2) const {
+        int maxd = 0;
+        FT maxl = mB[0] - mA[0];
+        for (int i = 0; i < mDim; i++) {
+            const FT newl = mB[i] - mA[i];
+            if (newl > maxl) {
+                maxl = newl;
+                maxd = i;
+            }
+        }
+        copy(box1);
+        copy(box2);
+        box1.mB[maxd] = box1.mA[maxd] + 0.5 * maxl;
+        box2.mA[maxd] = box2.mB[maxd] - 0.5 * maxl;
+    }
+
+    /**
+     * Returns the squared diameter of the box
+     * @return diameter squared
+     */
+    FT getDiameterSqr() const {
+        FT d = 0;
+        for (int i = 0; i < mDim; i++) {
+            const FT v = mB[i] - mA[i];
+            d += v * v;
+        }
+        return d;
     }
 
     /**
@@ -68,27 +115,26 @@ struct Box {
     int mDim;
 };
 
-std::ostream& operator<<(std::ostream& os, const Box& box)  
-{  
+std::ostream& operator<<(std::ostream& os, const Box& box) {
     const int n = box.mDim;
-    for(int i = 0; i < n; i ++) {
+    for (int i = 0; i < n; i++) {
         os << "[" << box.mA[i] << ", " << box.mB[i] << "]";
         os << ((i != (n - 1)) ? " x " : "");
     }
-    return os;  
-}  
-
+    return os;
+}
 
 /**
  * Defines a problem
  */
 struct Problem {
+
     /**
      * Constructor
      * @param box the bounding box
      * @param constrs the constraints
      */
-    Problem(Box& box, std::vector<Constr> constrs) : mBox(box), mConstrs(constrs) {        
+    Problem(Box& box, std::vector<Constr> constrs) : mBox(box), mConstrs(constrs) {
     }
     /**
      * Constraints of inequalities (left parts)
