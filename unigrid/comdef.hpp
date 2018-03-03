@@ -15,10 +15,13 @@
 #define COMDEF_HPP
 
 #include <iostream>
+#include <functional>
 
 using FT = float;
 
-using Constr = FT(*) (int, const FT*);
+//using Constr = FT(*) (int, const FT*);
+using Constr = std::function<FT(int, const FT*)>;
+
 
 /**
  * Box
