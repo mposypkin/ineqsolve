@@ -3,6 +3,7 @@
 #include "comdef.hpp"
 #include "ring.hpp"
 #include "meshbounder.hpp"
+#include "lipbounder.hpp"
 #include "ppbot.hpp"
 #include "bnb.hpp"
 
@@ -23,13 +24,14 @@ void printBoxVecGnuplot(int & cnt, std::vector<Box>& v, std::string color) {
     }
 }
 
-main() {
-    constexpr int N = 10;
-    //Problem& p = *getRingProblem(2);
-    Problem& p = *getPPbotProblem(2);
-    MeshBounder mb(p, N);
+main(int argc, char* argv[]) {
+    constexpr int N = 20;
+    Problem& p = *getRingProblem(2);
+    //Problem& p = *getPPbotProblem(2);
+    //MeshBounder mb(p, N);
+    LipBounder mb(p, N);
 
-    BnB bnb(p, mb, .001);
+    BnB bnb(p, mb, .01);
     std::vector<Box> inv, outv, boundv;
     bnb.solve(inv, outv, boundv);
     int cnt = 1;

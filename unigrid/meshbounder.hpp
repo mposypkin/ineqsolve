@@ -57,16 +57,7 @@ public:
             minCon = std::min(v, minCon);
         }
 
-        // hack
-        FT q = 0;
-        for (int i = 0; i < n; i++) {
-            q += delt[i] * delt[i];
-        }
-        const FT L = 2;
-        const FT d = sqrt(q);
-        maxCon += L * d;
-        minCon -= L * d;
-        // hack
+        
         Bounder::BoxType bt;
         if (maxCon <= 0)
             bt = Bounder::BoxType::IN;

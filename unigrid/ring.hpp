@@ -19,7 +19,7 @@
 
 constexpr FT r1 = 6;
 
-constexpr FT r2 = 5.7;
+constexpr FT r2 = 6;
 
 FT constr1(int n, const FT* x) {
     FT v = 0;
