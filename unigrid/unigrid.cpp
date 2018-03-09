@@ -2,10 +2,12 @@
 #include <vector>
 #include "comdef.hpp"
 #include "ring.hpp"
-#include "meshbounder.hpp"
-#include "lipbounder.hpp"
 #include "ppbot.hpp"
 #include "bnb.hpp"
+#include "meshbnd.hpp"
+#include "lipbnd.hpp"
+#include "simpsort.hpp"
+
 
 void printBoxVec(std::vector<Box>& v) {
     for (auto & bx : v) {
@@ -26,12 +28,15 @@ void printBoxVecGnuplot(int & cnt, std::vector<Box>& v, std::string color) {
 
 main(int argc, char* argv[]) {
     constexpr int N = 20;
-    Problem& p = *getRingProblem(2);
-    //Problem& p = *getPPbotProblem(2);
+    //Problem& p = *getRingProblem(2);
+    Problem& p = *getPPbotProblem(2);
     //MeshBounder mb(p, N);
-    LipBounder mb(p, N);
+    //LipBounder mb(p, N);
+    //MeshBnd bnd(N);
+    LipBnd bnd(N, p.mBox.mDim);
+    SimpSort ss(p, bnd);
 
-    BnB bnb(p, mb, .01);
+    BnB bnb(p, ss, .01);
     std::vector<Box> inv, outv, boundv;
     bnb.solve(inv, outv, boundv);
     int cnt = 1;

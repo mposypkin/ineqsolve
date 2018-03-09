@@ -16,7 +16,7 @@
 
 #include <vector>
 #include "comdef.hpp"
-#include "bounder.hpp"
+#include "boxsort.hpp"
 
 /**
  * A simple branch and bound method
@@ -28,7 +28,7 @@ public:
      * Constructor
      * @param prob the problem to solve
      */
-    BnB(const Problem & prob, Bounder& bounder, FT minDiam) : mProblem(prob), mBounder(bounder), mMinDiameter(minDiam) {
+    BnB(const Problem & prob, BoxSort& bounder, FT minDiam) : mProblem(prob), mBounder(bounder), mMinDiameter(minDiam) {
 
     }
 
@@ -44,12 +44,12 @@ public:
         while (!pool.empty()) {
             Box box(std::move(pool.back()));
             pool.pop_back();
-            Bounder::BoxType bt = mBounder.checkBox(box);
+            BoxSort::BoxType bt = mBounder.checkBox(box);
             switch (bt) {
-                case Bounder::BoxType::IN:
+                case BoxSort::BoxType::IN:
                     inv.push_back(std::move(box));
                     break;
-                case Bounder::BoxType::OUT:
+                case BoxSort::BoxType::OUT:
                     outv.push_back(std::move(box));
                     break;
                 default:
@@ -69,7 +69,7 @@ public:
 
 private:
     const Problem & mProblem;
-    const Bounder & mBounder;
+    const BoxSort & mBounder;
     const FT mMinDiameter;
 };
 

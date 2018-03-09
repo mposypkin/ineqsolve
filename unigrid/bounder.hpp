@@ -5,10 +5,10 @@
  */
 
 /* 
- * File:   Bounder.hpp
- * Author: mposypkin
+ * File:   bounder.hpp
+ * Author: mikhail
  *
- * Created on February 26, 2018, 4:35 PM
+ * Created on March 8, 2018, 7:34 PM
  */
 
 #ifndef BOUNDER_HPP
@@ -17,31 +17,15 @@
 #include "comdef.hpp"
 
 /**
- * Qualifies  boxes
+ * Abstract class for computing bounds 
  */
 class Bounder {
 public:
-
-    /**
-     * Possible types for box qualification
-     */
-    enum BoxType {
-        // the box is inside
-        IN,
-        // the box is outside
-        OUT,
-        // the box is boundary
-        BOUND
-    };
     
-    /**
-     * Evaluates and returns the type of the box
-     * @param box parameter
-     * @return the box's type
-     */
-    virtual BoxType checkBox(const Box& box) const = 0;
+    
+    virtual Interval getBound(const Box& box, Constr cons) const = 0;     
+       
 };
-
 
 #endif /* BOUNDER_HPP */
 

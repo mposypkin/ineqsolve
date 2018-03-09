@@ -16,12 +16,14 @@
 
 #include <iostream>
 #include <functional>
+#include <utility>
 
 using FT = float;
 
 //using Constr = FT(*) (int, const FT*);
 using Constr = std::function<FT(int, const FT*)>;
 
+using Interval = std::pair<FT, FT>;
 
 /**
  * Box
@@ -137,12 +139,17 @@ struct Problem {
      * @param box the bounding box
      * @param constrs the constraints
      */
-    Problem(Box& box, std::vector<Constr> constrs) : mBox(box), mConstrs(constrs) {
+    Problem(Box& box, std::vector<Constr> constrs) : mBox(box), mIneqConstrs(constrs) {
     }
     /**
      * Constraints of inequalities (left parts)
      */
-    std::vector<Constr> mConstrs;
+    std::vector<Constr> mIneqConstrs;
+
+    /**
+     * Equality constraints (left parts)
+     */
+    std::vector<Constr> mEqConstrs;
     /**
      * A bounding box
      */
