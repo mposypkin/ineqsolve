@@ -1,13 +1,15 @@
 #include <iostream>
 #include <vector>
 #include "comdef.hpp"
-#include "ring.hpp"
-#include "ppbot.hpp"
 #include "bnb.hpp"
 #include "meshbnd.hpp"
 #include "lipbnd.hpp"
 #include "simpsort.hpp"
-
+#include "ring.hpp"
+#include "ppbot.hpp"
+#include "ringseq.hpp"
+#include "rbot.hpp"
+#include "rbotineq.hpp"
 
 void printBoxVec(std::vector<Box>& v) {
     for (auto & bx : v) {
@@ -27,16 +29,17 @@ void printBoxVecGnuplot(int & cnt, std::vector<Box>& v, std::string color) {
 }
 
 main(int argc, char* argv[]) {
-    constexpr int N = 20;
+    constexpr int N = 8;
     //Problem& p = *getRingProblem(2);
-    Problem& p = *getPPbotProblem(2);
-    //MeshBounder mb(p, N);
-    //LipBounder mb(p, N);
+    // Problem& p = *getPPbotProblem(2);
+    // Problem& p = *getRingsEqProblem(2);
+    //Problem& p = *getRbotProblem();
+    Problem& p = *getRbotIneqProblem();
     //MeshBnd bnd(N);
     LipBnd bnd(N, p.mBox.mDim);
     SimpSort ss(p, bnd);
 
-    BnB bnb(p, ss, .01);
+    BnB bnb(p, ss, .001);
     std::vector<Box> inv, outv, boundv;
     bnb.solve(inv, outv, boundv);
     int cnt = 1;
@@ -47,9 +50,10 @@ main(int argc, char* argv[]) {
     std::cout << "# bound boxes:\n";
     printBoxVecGnuplot(cnt, boundv, "cyan");
 
+#if 0
     std::cout << "#outer boxes:\n";
     printBoxVecGnuplot(cnt, outv, "green");
-
+#endif
     //std::cout << "set object 15063 circle at  0,0 size 4 fs empty fc rgb'red'\n";
     //std::cout << "set object 15064 circle at  0,0 size 6 fs empty fc rgb'red'\n";
     std::cout << "set size square\n";

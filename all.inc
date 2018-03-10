@@ -14,8 +14,8 @@ PTHREADLD=-lpthread
 #OPENMPLD=-fopenmp
 
 #optimization options
-OPTIMOPT=-g
-#OPTIMOPT=-O
+# OPTIMOPT=-g
+OPTIMOPT=-O
 
 
 #Static linking option (if needed)
@@ -31,7 +31,7 @@ COMOPTS = $(STD_OPT)\
 	   -I$(ROOT)
 
 #C++ options
-CPPOPTS= $(COMOPTS) $(PCPPOPTS)
+CPPOPTS= $(COMOPTS) $(PCPPOPTS) $(OPTIMOPT)
 
 #Linker options for static linking
 LDFLAGS = -lm $(OPENMPLD) $(PTHREADLD) $(STATIC)

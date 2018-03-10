@@ -48,7 +48,7 @@ Problem* getRingProblem(int n) {
     vc.push_back(constr1);
     vc.push_back(constr2);
 
-    Problem* prob = new Problem(*box, vc);
+    Problem* prob = new Problem(*box, vc, {});
     return prob;
 }
 #endif /* RING_HPP */

@@ -38,22 +38,35 @@ public:
 
         for (auto ineqc : mProb.mIneqConstrs) {
             auto interv = mBnd.getBound(box, ineqc);
-//            std::cout << "[" << interv.first << " : " << interv.second << "]\n";
             if (interv.first > 0) {
                 bt = BoxSort::BoxType::OUT;
                 break;
-                
+
             } else if (interv.second > 0) {
                 bt = BoxSort::BoxType::BOUND;
             }
         }
-//        std::cout << "-------------\n";
+
+        for (auto ineqc : mProb.mEqConstrs) {
+            auto interv = mBnd.getBound(box, ineqc);
+            if (interv.first > 0) {
+                bt = BoxSort::BoxType::OUT;
+                break;
+            } else if(interv.second < 0) {
+                bt = BoxSort::BoxType::OUT;
+                break;
+            } else if((interv.first == 0) && (interv.second == 0)) {
+                continue;
+            } else {
+                bt = BoxSort::BoxType::BOUND;
+            }
+        }
         return bt;
     }
 
 private:
     const Bounder& mBnd;
-    const Problem& mProb;    
+    const Problem& mProb;
 };
 
 #endif /* SIMPSORT_HPP */

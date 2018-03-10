@@ -139,7 +139,7 @@ struct Problem {
      * @param box the bounding box
      * @param constrs the constraints
      */
-    Problem(Box& box, std::vector<Constr> constrs) : mBox(box), mIneqConstrs(constrs) {
+    Problem(Box& box, std::vector<Constr> iconstrs, std::vector<Constr> econstrs) : mBox(box), mIneqConstrs(iconstrs), mEqConstrs(econstrs) {
     }
     /**
      * Constraints of inequalities (left parts)

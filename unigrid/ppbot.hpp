@@ -17,9 +17,7 @@
 #include "comdef.hpp"
 
 /**
- * The constraint for a ling
- * @param lmin
- * @param lmax
+ * The constraint for a link
  */
 struct PPLinkConstr {
 
@@ -60,7 +58,7 @@ Problem* getPPbotProblem(int n) {
     vc.emplace_back(PPLinkConstr({5, 0}, 3, true));
     vc.emplace_back(PPLinkConstr({5, 0}, 8, false));
 
-    Problem* prob = new Problem(*box, vc);
+    Problem* prob = new Problem(*box, vc, {});
     return prob;
 }
 
