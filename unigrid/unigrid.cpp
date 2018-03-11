@@ -10,6 +10,7 @@
 #include "ringseq.hpp"
 #include "rbot.hpp"
 #include "rbotineq.hpp"
+#include "rpr.hpp"
 
 void printBoxVec(std::vector<Box>& v) {
     for (auto & bx : v) {
@@ -34,21 +35,26 @@ main(int argc, char* argv[]) {
     // Problem& p = *getPPbotProblem(2);
     // Problem& p = *getRingsEqProblem(2);
     //Problem& p = *getRbotProblem();
-    Problem& p = *getRbotIneqProblem();
+    //Problem& p = *getRbotIneqProblem();
+    Problem& p = *getRPRProblem();
     //MeshBnd bnd(N);
     LipBnd bnd(N, p.mBox.mDim);
     SimpSort ss(p, bnd);
 
-    BnB bnb(p, ss, .001);
+    BnB bnb(p, ss, .01);
     std::vector<Box> inv, outv, boundv;
     bnb.solve(inv, outv, boundv);
     int cnt = 1;
 
+#if 1
     std::cout << "# inner boxes:\n";
     printBoxVecGnuplot(cnt, inv, "blue");
+#endif
 
+#if 0
     std::cout << "# bound boxes:\n";
     printBoxVecGnuplot(cnt, boundv, "cyan");
+#endif
 
 #if 0
     std::cout << "#outer boxes:\n";
