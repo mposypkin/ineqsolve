@@ -29,6 +29,29 @@ void printBoxVecGnuplot(int & cnt, std::vector<Box>& v, std::string color) {
     }
 }
 
+void printBoxVecJSON(int & cnt, std::vector<Box>& v) {
+	constexpr int n = 3;
+	FT center[n];
+	std::cout << "[";
+	bool comma = false;
+    for (auto & bx : v) {
+    	bx.getCenter(center);
+    	if(comma)
+    		std::cout << ", ";
+    	else
+    		comma = true;
+    	std::cout << "{";
+    	std::cout << "x_center: " << center[0] << ", ";
+    	std::cout << "y_center: " << center[1] << ", ";
+    	std::cout << "z_center: " << center[2] << ", ";
+    	std::cout << "w: " << bx.mB[0] - bx.mA[0] << ", ";
+    	std::cout << "h: " << bx.mB[1] - bx.mA[1] << ", ";
+    	std::cout << "d: " << bx.mB[2] - bx.mA[2];
+    	std::cout << "}";
+    }
+    std::cout << "]\n";
+}
+
 int main(int argc, char* argv[]) {
     constexpr int N = 8;
    
@@ -45,13 +68,15 @@ int main(int argc, char* argv[]) {
     BnB bnb(p, ss, .01);
     std::vector<Box> inv, outv, boundv;
     
-//    bnb.solve(inv, outv, boundv);
-    bnb.solveOMPSimple(inv, outv, boundv);
+    bnb.solve(inv, outv, boundv);
+//    bnb.solveOMPSimple(inv, outv, boundv);
     int cnt = 1;
+
 
 #if 1
     std::cout << "# inner boxes:\n";
     printBoxVecGnuplot(cnt, inv, "blue");
+//    printBoxVecJSON(cnt, inv);
 #endif
 
 #if 0
@@ -65,11 +90,11 @@ int main(int argc, char* argv[]) {
 #endif
     //std::cout << "set object 15063 circle at  0,0 size 4 fs empty fc rgb'red'\n";
     //std::cout << "set object 15064 circle at  0,0 size 6 fs empty fc rgb'red'\n";
-    std::cout << "set size square\n";
-    std::cout << "set xrange [" << p.mBox.mA[0] << ":" << p.mBox.mB[0] << "]\n";
-    std::cout << "set yrange [" << p.mBox.mA[1] << ":" << p.mBox.mB[1] << "]\n";
-    std::cout << "set key off\n";
-    std::cout << "plot 1/0\n";
-    std::cout << "pause -1\n";
+//    std::cout << "set size square\n";
+//    std::cout << "set xrange [" << p.mBox.mA[0] << ":" << p.mBox.mB[0] << "]\n";
+//    std::cout << "set yrange [" << p.mBox.mA[1] << ":" << p.mBox.mB[1] << "]\n";
+//    std::cout << "set key off\n";
+//    std::cout << "plot 1/0\n";
+//    std::cout << "pause -1\n";
 
 }

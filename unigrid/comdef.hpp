@@ -105,6 +105,16 @@ struct Box {
     }
 
     /**
+     * Compute the center
+     * @param center the center point to fill in
+     */
+    void getCenter(FT* center) const {
+    	for(int i = 0; i < mDim; i ++) {
+    		center[i] = 0.5 *(mA[i] + mB[i]);
+    	}
+    }
+
+    /**
      * Lower bounds
      */
     FT* mA;
