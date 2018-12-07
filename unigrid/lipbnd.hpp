@@ -31,13 +31,9 @@ public:
      * @param n the dimension
      */
     LipBnd(int np, int n) : mNP(np) {
-        const int maxn = getTotalPointsNum(n, np);
-        const int sz = maxn * (n + 1);
-        mPoints = new FT[sz];
     }
 
     ~LipBnd() {
-        delete [] mPoints;
     }
 
     /**
@@ -49,11 +45,14 @@ public:
     Interval getBound(const Box& box, Constr cons) const {
         const int n = box.mDim;
         const int n1 = n + 1;
+        const int sz = getTotalPointsNum(n, mNP) * n1;
+        FT* points = new FT[sz];
+        
         FT maxCon = -std::numeric_limits<FT>::max();
         FT minCon = std::numeric_limits<FT>::max();
         const int maxn = getTotalPointsNum(n, mNP);
         for (int i = 0; i < maxn; i++) {
-            FT * const x = mPoints + i * n1;
+            FT * const x = points + i * n1;
             getMeshPoint(i, mNP, box, x);
             const FT v = cons(n, x);
             x[n] = v;
@@ -65,23 +64,25 @@ public:
             FT delt = ((box.mB[i] - box.mA[i]) / (mNP - 1));
             q += delt * delt;
         }
-        const FT L = getLip(n);
+        const FT L = getLip(n, points);
         const FT d = sqrt(q);
         //std::cout << "ld = " << L * d << "\n";
         maxCon += L * d;
         minCon -= L * d;
+        delete [] points;
         return std::make_pair(minCon, maxCon);
     }
 
 private:
 
-    FT getLip(int n) const {
+    FT getLip(int n, FT* points) const {
         const int n1 = n + 1;
         FT l = 0;
+//#pragma omp parallel for        
         for (int i = 0; i < mNP; i++) {
             for (int j = i + 1; j < mNP; j++) {
-                FT dr = dist(n, mPoints + i * n1, mPoints + j * n1);
-                FT dv = fabs(mPoints[i * n1 + n] - mPoints[j * n1 + n]);
+                FT dr = dist(n, points + i * n1, points + j * n1);
+                FT dv = fabs(points[i * n1 + n] - points[j * n1 + n]);
                 FT ln = dv / dr;
                 l = std::max(l, ln);
             }
@@ -99,7 +100,7 @@ private:
     }
 
     const int mNP;
-    FT* mPoints;
+    
 };
 
 

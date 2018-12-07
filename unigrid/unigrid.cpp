@@ -29,8 +29,9 @@ void printBoxVecGnuplot(int & cnt, std::vector<Box>& v, std::string color) {
     }
 }
 
-main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) {
     constexpr int N = 8;
+   
     //Problem& p = *getRingProblem(2);
     // Problem& p = *getPPbotProblem(2);
     // Problem& p = *getRingsEqProblem(2);
@@ -43,7 +44,9 @@ main(int argc, char* argv[]) {
 
     BnB bnb(p, ss, .01);
     std::vector<Box> inv, outv, boundv;
+    
     bnb.solve(inv, outv, boundv);
+//    bnb.solveOMPSimple(inv, outv, boundv);
     int cnt = 1;
 
 #if 1

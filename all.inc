@@ -8,10 +8,10 @@ LIBTOOL = ar -r
 PTHREADLD=-lpthread
 
 #OpenMP specific compiler options
-#OPENMPOPT=-fopenmp
+OPENMPOPT=-fopenmp
 
 #OpenMP specific linker options
-#OPENMPLD=-fopenmp
+OPENMPLD=-fopenmp
 
 #optimization options
 # OPTIMOPT=-g
@@ -31,7 +31,7 @@ COMOPTS = $(STD_OPT)\
 	   -I$(ROOT)
 
 #C++ options
-CPPOPTS= $(COMOPTS) $(PCPPOPTS) $(OPTIMOPT)
+CPPOPTS= $(COMOPTS) $(PCPPOPTS) $(OPTIMOPT) $(OPENMPOPT)
 
 #Linker options for static linking
 LDFLAGS = -lm $(OPENMPLD) $(PTHREADLD) $(STATIC)
