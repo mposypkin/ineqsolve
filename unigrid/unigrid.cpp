@@ -45,8 +45,8 @@ int main(int argc, char* argv[]) {
     BnB bnb(p, ss, .01);
     std::vector<Box> inv, outv, boundv;
     
-    bnb.solve(inv, outv, boundv);
-//    bnb.solveOMPSimple(inv, outv, boundv);
+//    bnb.solve(inv, outv, boundv);
+    bnb.solveOMPSimple(inv, outv, boundv);
     int cnt = 1;
 
 #if 1

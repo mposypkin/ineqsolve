@@ -76,15 +76,16 @@ public:
      * @param inv inner boxes
      * @param outv outer boxes
      * @param boundv boundary boxes
+     * @param parallel perform parallelization
      */
-    void solveOMPSimple(std::vector<Box> & inv, std::vector<Box> & outv, std::vector<Box> & boundv) {
+    void solveOMPSimple(std::vector<Box> & inv, std::vector<Box> & outv, std::vector<Box> & boundv, bool parallel = true) {
         const int n = mProblem.mBox.mDim;
         constexpr int masterThread = 0;
         std::vector<std::vector < Box > > poolVector;
         std::vector<std::vector < Box > > poolVectorNew;
 
         int totalSize = 0;
-#pragma omp parallel num_threads(16)
+#pragma omp parallel if(parallel)
         {
             std::vector<Box> linv, loutv, lboundv;
             const int nt = omp_get_thread_num();
@@ -109,16 +110,12 @@ public:
                             pool.clear();
                     }
                 }
-                //                std::cout << "totalSize = " << totalSize << "\n";
                 if (totalSize == 0) {
 #pragma omp critical
                     {
                         appendBoxVector(linv, inv);
                         appendBoxVector(loutv, outv);
                         appendBoxVector(lboundv, boundv);
-                        //inv.insert(inv.end(), linv.begin(), linv.end());
-//                        outv.insert(outv.end(), loutv.begin(), loutv.end());
-//                        boundv.insert(boundv.end(), boundv.begin(), boundv.end());
                     }
                     break;
                 }
@@ -126,7 +123,7 @@ public:
                 for (auto &pool : poolVector) {
                     const int poolSize = pool.size();
 #pragma omp for                
-                    for (int i = 0; i < poolSize; i++) {
+                    for (int i = 0; i < poolSize; i ++) {
                         Box box(std::move(pool[i]));
                         BoxSort::BoxType bt;
                         bt = mBounder.checkBox(box);
