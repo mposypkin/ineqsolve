@@ -27,10 +27,11 @@ public:
 
     /**
      * The constructor
-     * @param np number of points
+     * @param np number of points per dimension
      * @param n the dimension
+     * @param ibox the initial box
      */
-    LipBnd(int np, int n) : mNP(np) {
+    LipBnd(int np, const Box& ibox) : mNP(np), mIBox(ibox) {
     }
 
     ~LipBnd() {
@@ -66,9 +67,11 @@ public:
         }
         const FT L = getLip(n, points);
         const FT d = sqrt(q);
+        const FT gamma = 1 + box.getDiameterSqr()/mIBox.getDiameterSqr();
+
         //std::cout << "ld = " << L * d << "\n";
-        maxCon += L * d;
-        minCon -= L * d;
+        maxCon += gamma * L * d;
+        minCon -= gamma * L * d;
         delete [] points;
         return std::make_pair(minCon, maxCon);
     }
@@ -100,6 +103,7 @@ private:
     }
 
     const int mNP;
+    const Box& mIBox;
     
 };
 

@@ -42,8 +42,8 @@ Problem* getRPRProblem() {
         box->mA[i] = -d;
         box->mB[i] = D + d;
     }
-    box->mA[2] = -M_PI/6;
-    box->mB[2] = M_PI/6;
+    box->mA[2] = -M_PI/2;
+    box->mB[2] = M_PI/2;
     //box->mA[2] = box->mB[2] = 0;
 
     std::vector<Constr> vc;
